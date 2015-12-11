@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package com.example.android.camera2basic;
+package com.example.android.camera2basic
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.app.Activity
+import android.os.Bundle
 
-public class CameraActivity extends Activity {
+class CameraActivity : Activity() {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_camera)
         if (null == savedInstanceState) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, Camera2BasicFragment.newInstance())
-                    .commit();
+            fragmentManager.beginTransaction().replace(R.id.container, Camera2BasicFragment.newInstance()).commit()
         }
     }
 
