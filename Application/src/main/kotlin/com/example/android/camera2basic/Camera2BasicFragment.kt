@@ -17,7 +17,6 @@
 package com.example.android.camera2basic
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.app.DialogFragment
@@ -26,21 +25,8 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.graphics.ImageFormat
-import android.graphics.Matrix
-import android.graphics.Point
-import android.graphics.RectF
-import android.graphics.SurfaceTexture
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraCaptureSession
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraDevice
-import android.hardware.camera2.CameraManager
-import android.hardware.camera2.CameraMetadata
-import android.hardware.camera2.CaptureRequest
-import android.hardware.camera2.CaptureResult
-import android.hardware.camera2.TotalCaptureResult
-import android.hardware.camera2.params.StreamConfigurationMap
+import android.graphics.*
+import android.hardware.camera2.*
 import android.media.Image
 import android.media.ImageReader
 import android.os.Bundle
@@ -50,21 +36,12 @@ import android.support.v13.app.FragmentCompat
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
-import android.view.LayoutInflater
-import android.view.Surface
-import android.view.TextureView
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
-
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.nio.ByteBuffer
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.Collections
-import java.util.Comparator
+import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 
@@ -164,13 +141,13 @@ class Camera2BasicFragment : Fragment(), View.OnClickListener, FragmentCompat.On
     /**
      * This is the output file for our picture.
      */
-    private var mFile: File? = null
+    private var mFile: File? = null;
 
     /**
      * This a callback object for the [ImageReader]. "onImageAvailable" will be called when a
      * still image is ready to be saved.
      */
-    private val mOnImageAvailableListener = ImageReader.OnImageAvailableListener { reader -> mBackgroundHandler!!.post(ImageSaver(reader.acquireNextImage(), mFile)) }
+    private val mOnImageAvailableListener = ImageReader.OnImageAvailableListener { reader -> mBackgroundHandler!!.post(ImageSaver(reader.acquireNextImage(), mFile!!)) }
 
     /**
      * [CaptureRequest.Builder] for the camera preview
@@ -261,7 +238,7 @@ class Camera2BasicFragment : Fragment(), View.OnClickListener, FragmentCompat.On
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle): View? {
+                              savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_camera2_basic, container, false)
     }
 
@@ -764,7 +741,12 @@ class Camera2BasicFragment : Fragment(), View.OnClickListener, FragmentCompat.On
 
         override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
             val activity = activity
-            return AlertDialog.Builder(activity).setMessage(arguments.getString(ARG_MESSAGE)).setPositiveButton(android.R.string.ok) { activity.finish() }.create()
+            return AlertDialog.Builder(activity).setMessage(arguments.getString(ARG_MESSAGE))
+                    .setPositiveButton(android.R.string.ok, object : DialogInterface.OnClickListener {
+                        override fun onClick(dialogInterface: DialogInterface, int: Int) {
+                            activity.finish()
+                        }
+                    }).create()
         }
 
         companion object {
@@ -789,15 +771,18 @@ class Camera2BasicFragment : Fragment(), View.OnClickListener, FragmentCompat.On
 
         override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
             val parent = parentFragment
-            return AlertDialog.Builder(activity).setMessage(R.string.request_permission).setPositiveButton(android.R.string.ok) {
-                FragmentCompat.requestPermissions(parent,
-                        arrayOf<String>(Manifest.permission.CAMERA),
-                        REQUEST_CAMERA_PERMISSION)
-            }.setNegativeButton(android.R.string.cancel
-            ) {
-                val activity = parent.activity
-                activity?.finish()
-            }.create()
+            return AlertDialog.Builder(activity).setMessage(R.string.request_permission).setPositiveButton(android.R.string.ok, object : DialogInterface.OnClickListener {
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    FragmentCompat.requestPermissions(parent,
+                            arrayOf(Manifest.permission.CAMERA),
+                            REQUEST_CAMERA_PERMISSION)
+                }
+            }).setNegativeButton(android.R.string.cancel, object : DialogInterface.OnClickListener {
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    val activity = parent.activity
+                    activity?.finish()
+                }
+            }).create();
         }
     }
 

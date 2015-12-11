@@ -19,11 +19,12 @@ package com.example.android.camera2basic
 import android.content.Context
 import android.util.AttributeSet
 import android.view.TextureView
+import android.view.View
 
 /**
  * A [TextureView] that can be adjusted to a specified aspect ratio.
  */
-class AutoFitTextureView @JvmOverloads constructor(context: Context, attrs: AttributeSet = null, defStyle: Int = 0) : TextureView(context, attrs, defStyle) {
+class AutoFitTextureView @JvmOverloads constructor(context: Context, attrs: AttributeSet, defStyle: Int = 0) : TextureView(context, attrs, defStyle) {
 
     private var mRatioWidth = 0
     private var mRatioHeight = 0
