@@ -1,18 +1,23 @@
 
 buildscript {
+    ext.kotlin_version = '1.0.0-beta-3595'
     repositories {
         jcenter()
+        mavenCentral()
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -20,6 +25,7 @@ dependencies {
     compile "com.android.support:support-v13:23.1.0"
     compile "com.android.support:cardview-v7:23.1.0"
     compile 'com.android.support:appcompat-v7:23.0.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 // The sample build uses multiple directories to
@@ -53,6 +59,7 @@ android {
         }
         androidTest.setRoot('tests')
         androidTest.java.srcDirs = ['tests/src']
+        main.java.srcDirs += 'src/main/kotlin'
 
     }
 
